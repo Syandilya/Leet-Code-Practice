@@ -1,51 +1,33 @@
-// Brute force
-
-// class Solution {
-//     public int numSteps(String s) {
-//         int count = 0;
-//         int n = 0;
-
-//         for(int i=0; i<s.length(); i++) {
-//             n = (2 * n) + (s.charAt(i) - '0');
-//         }
-
-//         while(n != 1) {
-//             if((n & 1) == 1) {
-//                 n += 1;
-//             } else {
-//                 n /= 2;
-//             }
-
-//             count++;
-//         }
-
-//         return count;
-//     }
-// } 
-
-
-
-
-
-
-// Optimal Solution
-
 class Solution {
     public int numSteps(String s) {
-        int count = 0;
+        int l = s.length() - 1;
         int carry = 0;
-
-        for(int i=s.length()-1; i>0; i--) {
-            int bit = s.charAt(i) - '0';
-
-            if(bit + carry == 1) {
-                count += 2;
+        int count = 0;
+        
+        while (l > 0) {
+            // even number with carry = 0, result even
+            if (Character.getNumericValue(s.charAt(l)) + carry == 0) {
+                carry = 0;
+                count++;
+            // odd number with carry = 1, result even
+            } else if (Character.getNumericValue(s.charAt(l)) + carry == 2) {
                 carry = 1;
+                count++;
+            // even number with carry = 1, result odd
+            // odd number with carry = 0, result odd
             } else {
-                count += 1;
+                carry = 1;
+                count += 2;
             }
+            l--;
         }
-
-        return count + carry;
+        
+        // last digit 1 needs to add a carried over digit 1, which gives 10.
+        // So need one more divide to make it 1 (one more step)
+        if (carry == 1) {
+            count++;
+        }
+        
+        return count;
     }
-} 
+}
